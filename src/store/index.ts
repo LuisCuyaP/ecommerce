@@ -1,6 +1,7 @@
 // /store/index.ts
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import cartReducer from "./cartSlice";
+import uiReducer from "./uiSlice"; // ⬅️ UI (toast)
 
 // redux-persist
 import {
@@ -35,18 +36,19 @@ const createNoopStorage = () => {
 };
 
 const storage =
-  typeof window !== "undefined"
-    ? createWebStorage("local")
-    : createNoopStorage();
+  typeof window !== "undefined" ? createWebStorage("local") : createNoopStorage();
 
+// 👉 Aquí combinamos reducers; agregamos ui
 const rootReducer = combineReducers({
   cart: cartReducer,
+  ui: uiReducer, // ⬅️ ahora el slice de UI está en el store
 });
 
+// Persistimos SOLO el carrito (el toast no tiene sentido persistirlo)
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart"], // persistimos solo el carrito
+  whitelist: ["cart"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -56,15 +58,13 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignoramos estas actions internas de redux-persist
+        // Ignorar acciones internas de redux-persist
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
 });
 
-// Tipos para hooks tipados
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-// Persistor (usado en <PersistGate>)
 export const persistor = persistStore(store);

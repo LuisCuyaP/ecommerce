@@ -1,38 +1,24 @@
-export type Variant = {
-  id: string;        // sku de la variante
-  brand: string;     // marca
-  image: string;     // ruta en /public
-  price?: number;    // opcional, si cambia por marca
-};
+export type CategorySlug = "zapatillas" | "mochilas";
 
 export type Product = {
   id: string;
   name: string;
   slug: string;
-  price: number;     // precio base
-  //image: string;     // imagen principal (para el listado)
+  price: number;
+  image: string;        // ruta en /public
   description?: string;
-  variants?: Variant[];
+  category: CategorySlug;
+  brand?: string;
 };
 
 export const products: Product[] = [
-  {
-    id: "1",
-    name: "Zapatillas Runner",
-    slug: "zapatillas-runner",
-    price: 199.9,
-    //image: "/products/zapatillas-runner/nike.jpg", // portada (puede ser la primera)
-    description: "Modelo para running diario, livianas y resistentes.",
-    variants: [
-      { id: "nike",   brand: "Nike",   image: "/products/zapatillas-runner/shoes01.jpg",   price: 219.9 },
-      { id: "adidas", brand: "Adidas", image: "/products/zapatillas-runner/shoes02.jpg", price: 209.9 },      
-    ],
-  },
-  {
-    id: "2",
-    name: "Mochila Urbana",
-    slug: "mochila-urbana",
-    price: 129.0,
-    //image: "/products/bag-1.jpg",
-  },
+  // Zapatillas (3+)
+  { id: "z1", name: "Zapatillas Running Puma Hombre",  slug: "zapatillas-running-puma",       price: 139.30, image: "/products/zapatillas-runner/shoes01.jpg",   category: "zapatillas", brand: "PUMA" },
+  { id: "z2", name: "Zapatillas Running Adidas Hombre",slug: "zapatillas-running-adidas",     price: 109.62, image: "/products/zapatillas-runner/shoes02.jpg", category: "zapatillas", brand: "ADIDAS" },
+  { id: "z3", name: "Zapatillas Running Puma Gris",    slug: "zapatillas-running-puma-gris",  price: 139.30, image: "/products/zapatillas-runner/shoes01.jpg",   category: "zapatillas", brand: "PUMA" },
+
+  // Mochilas (3+)
+  { id: "m1", name: "Mochila Urbana Negra",            slug: "mochila-urbana-negra",          price:  99.90, image: "/products/zapatillas-runner/shoes01.jpg",   category: "mochilas",   brand: "URBANA" },
+  { id: "m2", name: "Mochila Deportiva",               slug: "mochila-deportiva",             price: 119.00, image: "/products/mochilas/mochila-2.jpg",   category: "mochilas",   brand: "SPORT" },
+  { id: "m3", name: "Mochila Laptop 15”",              slug: "mochila-laptop-15",             price: 139.00, image: "/products/mochilas/mochila-3.jpg",   category: "mochilas",   brand: "URBANA" },
 ];

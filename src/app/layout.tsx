@@ -1,6 +1,8 @@
 import "./globals.css";
 import Providers from "./providers";
 import { ReactNode } from "react";
+import GlobalToast from "@/components/GlobalToast"; 
+import Navbar from "@/components/Navbar";
 
 export const metadata = {
   title: "Ecommerce",
@@ -11,7 +13,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es">
       <body className="min-h-screen bg-white text-gray-900">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+          <GlobalToast />
+        </Providers>
       </body>
     </html>
   );

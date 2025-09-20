@@ -1,16 +1,51 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectItems, selectTotalAmount, removeItem, clear } from "@/store/cartSlice";
 
-export default function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+type Props = { open: boolean; onClose: () => void };
+
+export default function CartDrawer({ open, onClose }: Props) {
+  const [mounted, setMounted] = useState(false);
   const items = useAppSelector(selectItems);
   const total = useAppSelector(selectTotalAmount);
   const dispatch = useAppDispatch();
 
-  return (
-    <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
-      <div className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`} onClick={onClose} />
-      <aside className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transition-transform ${open ? "translate-x-0" : "translate-x-full"}`}>
+  // montar portal
+  useEffect(() => setMounted(true), []);
+
+  // bloquear scroll del body cuando está abierto (opcional pero recomendado)
+  useEffect(() => {
+    if (!mounted) return;
+    const root = document.documentElement; // o document.body
+    if (open) root.classList.add("overflow-hidden");
+    else root.classList.remove("overflow-hidden");
+    return () => root.classList.remove("overflow-hidden");
+  }, [open, mounted]);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
+      className={`fixed inset-0 z-[100] ${open ? "" : "pointer-events-none"}`}
+      aria-hidden={!open}
+    >
+      {/* backdrop */}
+      <div
+        className={`absolute inset-0 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
+        onClick={onClose}
+      />
+      {/* panel */}
+      <aside
+        className={`absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transition-transform ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Carrito"
+      >
         <div className="flex items-center justify-between border-b p-4">
           <h2 className="text-lg font-medium">Tu carrito</h2>
           <button onClick={onClose} aria-label="Cerrar">✕</button>
@@ -46,16 +81,22 @@ export default function CartDrawer({ open, onClose }: { open: boolean; onClose: 
             <span>Total</span>
             <strong>S/ {total.toFixed(2)}</strong>
           </div>
-          <button className="mt-3 w-full rounded-xl bg-black px-4 py-2 text-white" disabled={items.length === 0}
+          <button
+            className="mt-3 w-full rounded-xl bg-black px-4 py-2 text-white disabled:opacity-50"
+            disabled={items.length === 0}
             onClick={() => alert("Checkout (solo front)")}
           >
             Ir a pagar
           </button>
-          <button className="mt-2 w-full rounded-xl border px-4 py-2 hover:bg-gray-50" onClick={() => dispatch(clear())}>
+          <button
+            className="mt-2 w-full rounded-xl border px-4 py-2 hover:bg-gray-50"
+            onClick={() => dispatch(clear())}
+          >
             Vaciar carrito
           </button>
         </div>
       </aside>
-    </div>
+    </div>,
+    document.body
   );
 }
