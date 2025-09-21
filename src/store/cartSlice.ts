@@ -23,6 +23,7 @@ const cartSlice = createSlice({
   },
 });
 
+// se usa en los dispatch
 export const { addItem, removeItem, clear } = cartSlice.actions;
 
 // Selectores

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectItems, selectTotalAmount, removeItem, clear } from "@/store/cartSlice";
+import Link from "next/link"; 
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -81,13 +82,15 @@ export default function CartDrawer({ open, onClose }: Props) {
             <span>Total</span>
             <strong>S/ {total.toFixed(2)}</strong>
           </div>
-          <button
-            className="mt-3 w-full rounded-xl bg-black px-4 py-2 text-white disabled:opacity-50"
-            disabled={items.length === 0}
-            onClick={() => alert("Checkout (solo front)")}
+          <Link
+            href="/checkout"
+            onClick={onClose} // 👈 cerramos el drawer al navegar
+            className={`mt-3 block w-full rounded-xl bg-black px-4 py-2 text-center text-white hover:bg-gray-900 ${
+              items.length === 0 ? "pointer-events-none opacity-50" : ""
+            }`}
           >
             Ir a pagar
-          </button>
+          </Link>
           <button
             className="mt-2 w-full rounded-xl border px-4 py-2 hover:bg-gray-50"
             onClick={() => dispatch(clear())}

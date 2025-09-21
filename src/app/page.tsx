@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { products, type CategorySlug } from "@/data/products";
 import AddToCartButton from "@/components/AddToCartButton";
-import CartButton from "@/components/CartButton";
 
 type CategoryDef = {
   slug: CategorySlug;
